@@ -5,9 +5,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { PrismaModule } from './prisma/prisma.module';
 import { ServicesModule } from './services/services.module';
+import { ContactsModule } from './contacts/contacts.module';
+import { TimeOptionsModule } from './time-options/time-options.module';
 
 @Module({
-  imports: [MailModule, AuthModule, UserModule, PrismaModule, ServicesModule],
+  imports: [MailModule, AuthModule, UserModule, PrismaModule, ServicesModule, ContactsModule, TimeOptionsModule],
   controllers: [AppController],
   providers: [],
 })
