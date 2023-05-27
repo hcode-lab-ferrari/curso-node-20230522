@@ -23,6 +23,7 @@ model Person {
   updatedAt DateTime  @default(now()) @db.DateTime(0)
   User      User[]
   Contact   Contact[]
+  Address   Address[]
 
   @@map("persons")
 }
@@ -86,4 +87,23 @@ model TimeOption {
   updatedAt DateTime @default(now()) @db.DateTime(0)
 
   @@map("time_options")
+}
+
+model Address {
+  id         Int      @id @default(autoincrement())
+  street     String   @db.VarChar(255)
+  number     String?  @db.VarChar(16)
+  complement String?  @db.VarChar(255)
+  district   String   @db.VarChar(255)
+  city       String   @db.VarChar(255)
+  state      String   @db.VarChar(255)
+  country    String   @db.VarChar(255)
+  zipCode    String   @db.VarChar(8)
+  personId   Int
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  updatedAt  DateTime @default(now()) @db.DateTime(0)
+  person     Person   @relation(fields: [personId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_addresses_persons")
+
+  @@index([personId], map: "FK_addresses_persons")
+  @@map("addresses")
 }

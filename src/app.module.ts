@@ -7,9 +7,10 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ServicesModule } from './services/services.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { TimeOptionsModule } from './time-options/time-options.module';
+import { AddressesModule } from './addresses/addresses.module';
 
 @Module({
-  imports: [MailModule, AuthModule, UserModule, PrismaModule, ServicesModule, ContactsModule, TimeOptionsModule],
+  imports: [MailModule, AuthModule, UserModule, PrismaModule, ServicesModule, ContactsModule, TimeOptionsModule, AddressesModule],
   controllers: [AppController],
   providers: [],
 })

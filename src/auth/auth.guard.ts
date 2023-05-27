@@ -1,34 +1,44 @@
-import { Injectable, CanActivate, ExecutionContext, BadRequestException } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { UserService } from 'src/user/user.service';
-import { AuthService } from './auth.service';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from '../prisma/prisma.service';
+import { AuthType } from './auth.type';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
-  constructor(private authService: AuthService, private userService: UserService) {}
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const Authorization = request.headers['authorization'];
 
-  async canActivate(
-    context: ExecutionContext,
-  ): Promise<boolean> {
-
-    try {
-      const request = context.switchToHttp().getRequest();
-      const authorization = request.headers['authorization'];
-      const token =  authorization.split(' ')[1];
-
-      if (!token) {
-        throw new BadRequestException("Token is required");
-      }
-
-      request.auth = await this.authService.decodeToken(token);
-
-      request.user = await this.userService.get(request.auth.id);
-
-    } catch (e) {
-      return false;
+    if (!Authorization) {
+      throw new UnauthorizedException('Authorization token required.');
     }
 
-    return true;
+    try {
+      const token = Authorization.split(' ')[1];
+
+      this.jwtService.verify(token);
+
+      request.auth = this.jwtService.decode(token) as AuthType;
+
+      request.user = await this.prisma.user.findFirst({
+        where: { id: request.auth.id },
+        include: { person: true },
+      });
+
+      if (!request.user) {
+        throw new UnauthorizedException('User not found.');
+      }
+
+      return true;
+    } catch (e) {
+      throw new UnauthorizedException(e.message);
+    }
   }
 }

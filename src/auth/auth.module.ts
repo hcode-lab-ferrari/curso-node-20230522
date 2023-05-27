@@ -8,9 +8,6 @@ import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
-    MailModule,
-    PrismaModule,
-    UserModule,
     JwtModule.registerAsync({
       useFactory: () => ({
         secret: process.env.JWT_SECRET,
@@ -19,9 +16,12 @@ import { MailModule } from 'src/mail/mail.module';
         },
       }),
     }),
+    MailModule,
+    PrismaModule,
+    UserModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],
-  exports: [AuthService],
+  exports: [JwtModule],
 })
 export class AuthModule {}
