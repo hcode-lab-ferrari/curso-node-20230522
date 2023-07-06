@@ -22,7 +22,7 @@ export class PaymentController {
 
   @Post()
   async paymentCreate(@Body() data: CreatePaymentDto, @User() user) {
-    return this.paymentService.create(data, user.personId);
+    return this.paymentService.create(data, 1);
   }
 
   @Post('preferences')
