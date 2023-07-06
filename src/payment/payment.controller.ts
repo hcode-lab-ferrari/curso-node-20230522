@@ -14,6 +14,7 @@ export class PaymentController {
 
   @Get()
   async paymentBefore(@Query('services') services) {
+    console.log('CONTROLLER: Caiu payment before');
     return {
       amount: await this.servicesService.getAmount(services),
     };
@@ -26,6 +27,7 @@ export class PaymentController {
 
   @Post('preferences')
   async preferences(@Body() data: CreatePreferenceDto) {
+    console.log('CONTROLLER: Caiu /Payment/Preferences');
     return this.paymentService.preferences(data);
   }
 
